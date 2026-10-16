@@ -45,6 +45,16 @@ public class QuantumWallBlock extends Block {
     }
 
     @Override
+    protected boolean propagatesSkylightDown(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getLightDampening(BlockState state) {
+        return 0;
+    }
+
+    @Override
     public PushReaction getPistonPushReaction(BlockState state) {
         return PushReaction.BLOCK;
     }
