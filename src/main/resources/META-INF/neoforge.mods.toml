@@ -2,6 +2,9 @@ modLoader = "javafml"
 loaderVersion = "[1,)"
 license = "MIT License"
 
+[[mixins]]
+config = "quantumcubes.mixins.json"
+
 [[mods]]
 modId = "${mod_id}"
 version = "${mod_version}"
@@ -10,15 +13,15 @@ description = "Portable dimensions inside a block. Build your base in a quantum 
 authors = "titammods"
 
 [[dependencies.${mod_id}]]
-    modId = "neoforge"
-    type = "required"
-    versionRange = "[${neoforge_version},)"
-    ordering = "NONE"
-    side = "BOTH"
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
 
 [[dependencies.${mod_id}]]
-    modId = "minecraft"
-    type = "required"
-    versionRange = "[${minecraft_version},)"
-    ordering = "NONE"
-    side = "BOTH"
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft_version},)"
+ordering = "NONE"
+side = "BOTH"

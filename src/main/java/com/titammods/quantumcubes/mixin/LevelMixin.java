@@ -1,0 +1,37 @@
+package com.titammods.quantumcubes.mixin;
+
+import com.titammods.quantumcubes.block.QuantumWallBlock;
+import com.titammods.quantumcubes.dimension.ModDimensions;
+import com.titammods.quantumcubes.registry.ModBlocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(Level.class)
+public abstract class LevelMixin {
+
+    @Inject(method = "setBlock(Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;II)Z",
+            at = @At("HEAD"), cancellable = true)
+    private void quantumcubes$lockWalls(BlockPos pos, BlockState newState, int flags, int updateLimit,
+                                        CallbackInfoReturnable<Boolean> cir) {
+        Level level = (Level) (Object) this;
+        if (level.isClientSide() || !level.dimension().equals(ModDimensions.QUANTUM_LEVEL)) {
+            return;
+        }
+        if (QuantumWallBlock.isBypassing()) {
+            return;
+        }
+        Block wall = ModBlocks.QUANTUM_BLOCK.get();
+        if (newState.is(wall)) {
+            return;
+        }
+        if (level.getBlockState(pos).is(wall)) {
+            cir.setReturnValue(false);
+        }
+    }
+}

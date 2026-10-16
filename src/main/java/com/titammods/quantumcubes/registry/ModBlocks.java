@@ -3,6 +3,7 @@ package com.titammods.quantumcubes.registry;
 import com.titammods.quantumcubes.QuantumCubes;
 import com.titammods.quantumcubes.block.CubeTier;
 import com.titammods.quantumcubes.block.QuantumCubeBlock;
+import com.titammods.quantumcubes.block.QuantumWallBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
@@ -24,8 +25,8 @@ public class ModBlocks {
     public static final DeferredBlock<QuantumCubeBlock> TIER_4 = registerTier(CubeTier.TIER_4);
     public static final DeferredBlock<QuantumCubeBlock> TIER_5 = registerTier(CubeTier.TIER_5);
 
-    public static final DeferredBlock<Block> QUANTUM_BLOCK = registerBlock("quantum_block",
-            key -> new Block(BlockBehaviour.Properties.of()
+    public static final DeferredBlock<QuantumWallBlock> QUANTUM_BLOCK = registerBlock("quantum_block",
+            key -> new QuantumWallBlock(BlockBehaviour.Properties.of()
                     .setId(key)
                     .strength(-1.0f, 3600000.0f)
                     .sound(SoundType.STONE)
