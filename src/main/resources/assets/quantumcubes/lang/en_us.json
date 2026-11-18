@@ -27,5 +27,7 @@
   "command.quantumcubes.list.chunk": "(chunk-aligned)",
   "command.quantumcubes.tp.unknown": "Cube #%s is not registered yet (someone must enter it through its block once)",
   "command.quantumcubes.spawn.reset": "Your entry point for this cube was reset",
-  "command.quantumcubes.spawn.none": "You have no entry point set in the cube you are standing in"
+  "command.quantumcubes.spawn.none": "You have no entry point set in the cube you are standing in",
+  "message.quantumcubes.building": "Materializing the cube... %s%%",
+  "message.quantumcubes.cube_ready": "The cube is ready. Use the remote on it to enter."
 }

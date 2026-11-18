@@ -11,7 +11,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.portal.TeleportTransition;
@@ -21,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.jspecify.annotations.Nullable;
 
-public final class QuantumDimension {
+public class QuantumDimension {
 
     public static final int SPACING = 2000;
 
@@ -82,11 +81,30 @@ public final class QuantumDimension {
             record = new CubeRecord(index, tier, CubeLayout.CHUNK, Optional.of(player.getUUID()), Map.of());
             data.registerCube(record);
             be.setCube(index);
-            generateCube(dimension, record.geometry());
+            if (!CubeBuilder.build(dimension, record)) {
+                CubeBuilder.await(index, player, be.getBlockPos());
+                return true;
+            }
         } else {
             record = data.cubeOrLegacy(be.getCubeIndex(), tier);
+            if (CubeBuilder.isBuilding(record.index())) {
+                CubeBuilder.await(record.index(), player, be.getBlockPos());
+                return true;
+            }
         }
 
+        data.pushReturn(player.getUUID(), ReturnPoint.of(player));
+        teleportInto(player, dimension, record);
+        return true;
+    }
+
+    public static boolean arrive(ServerPlayer player, ServerLevel dimension, CubeRecord record) {
+        QuantumSavedData data = QuantumSavedData.get(dimension);
+        if (data.returnDepth(player.getUUID()) >= MAX_DEPTH) {
+            player.sendOverlayMessage(Component.translatable("message.quantumcubes.too_deep")
+                    .withStyle(ChatFormatting.DARK_RED, ChatFormatting.ITALIC));
+            return false;
+        }
         data.pushReturn(player.getUUID(), ReturnPoint.of(player));
         teleportInto(player, dimension, record);
         return true;
@@ -212,30 +230,6 @@ public final class QuantumDimension {
         return QuantumSavedData.get(dimension).cube(index)
                 .map(record -> record.geometry().interior())
                 .orElse(tier.legacyInterior());
-    }
-
-    public static void generateCube(ServerLevel level, CubeGeometry geometry) {
-        int x0 = geometry.minX();
-        int y0 = geometry.minY();
-        int z0 = geometry.minZ();
-        int x1 = geometry.maxX();
-        int y1 = geometry.maxY();
-        int z1 = geometry.maxZ();
-
-        BlockState wall = ModBlocks.QUANTUM_BLOCK.get().defaultBlockState();
-        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
-
-        for (int x = x0; x <= x1; x++) {
-            for (int y = y0; y <= y1; y++) {
-                for (int z = z0; z <= z1; z++) {
-                    boolean boundary = x == x0 || x == x1 || y == y0 || y == y1 || z == z0 || z == z1;
-                    if (boundary) {
-                        cursor.set(x, y, z);
-                        level.setBlock(cursor, wall, Block.UPDATE_CLIENTS);
-                    }
-                }
-            }
-        }
     }
 
     private static int indexAt(double x) {

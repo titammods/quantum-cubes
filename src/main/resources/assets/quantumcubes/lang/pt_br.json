@@ -27,5 +27,7 @@
   "command.quantumcubes.list.chunk": "(alinhado a chunks)",
   "command.quantumcubes.tp.unknown": "O cubo #%s ainda não está registrado (alguém precisa entrar nele pelo bloco uma vez)",
   "command.quantumcubes.spawn.reset": "Seu ponto de entrada neste cubo foi resetado",
-  "command.quantumcubes.spawn.none": "Você não tem ponto de entrada definido no cubo em que está"
+  "command.quantumcubes.spawn.none": "Você não tem ponto de entrada definido no cubo em que está",
+  "message.quantumcubes.building": "Materializando o cubo... %s%%",
+  "message.quantumcubes.cube_ready": "O cubo está pronto. Use o controle nele para entrar."
 }

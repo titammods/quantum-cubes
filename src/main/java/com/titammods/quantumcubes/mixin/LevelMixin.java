@@ -2,6 +2,7 @@ package com.titammods.quantumcubes.mixin;
 
 import com.titammods.quantumcubes.block.QuantumWallBlock;
 import com.titammods.quantumcubes.dimension.ModDimensions;
+import com.titammods.quantumcubes.dimension.WallFilter;
 import com.titammods.quantumcubes.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -23,11 +24,11 @@ public abstract class LevelMixin {
         if (level.isClientSide() || !level.dimension().equals(ModDimensions.QUANTUM_LEVEL)) {
             return;
         }
-        if (QuantumWallBlock.isBypassing()) {
+        if (!WallFilter.mayBeWall(pos.getX(), pos.getY(), pos.getZ())) {
             return;
         }
         Block wall = ModBlocks.QUANTUM_BLOCK.get();
-        if (newState.is(wall)) {
+        if (newState.is(wall) || QuantumWallBlock.isBypassing()) {
             return;
         }
         if (level.getBlockState(pos).is(wall)) {
