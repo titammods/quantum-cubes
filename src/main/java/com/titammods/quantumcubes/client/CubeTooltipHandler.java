@@ -31,7 +31,9 @@ public final class CubeTooltipHandler {
         }
 
         CubeTier tier = cube.getTier();
-        int s = tier.interiorSize();
+        Integer interior = event.getItemStack().get(ModDataComponents.CUBE_INTERIOR.get());
+        Integer bound = event.getItemStack().get(ModDataComponents.CUBE_INDEX.get());
+        int s = interior != null ? interior : bound != null ? tier.legacyInterior() : tier.interiorSize();
         List<Component> lines = event.getToolTip();
 
         lines.add(Component.translatable("tooltip.quantumcubes.interior",

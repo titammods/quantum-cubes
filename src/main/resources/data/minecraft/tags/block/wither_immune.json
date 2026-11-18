@@ -1,6 +1,11 @@
 {
   "replace": false,
   "values": [
-    "quantumcubes:quantum_block"
+    "quantumcubes:quantum_block",
+    "quantumcubes:quantum_cube_tier_1",
+    "quantumcubes:quantum_cube_tier_2",
+    "quantumcubes:quantum_cube_tier_3",
+    "quantumcubes:quantum_cube_tier_4",
+    "quantumcubes:quantum_cube_tier_5"
   ]
 }

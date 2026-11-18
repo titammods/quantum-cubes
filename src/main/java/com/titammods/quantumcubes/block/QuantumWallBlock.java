@@ -23,7 +23,7 @@ public class QuantumWallBlock extends Block {
     }
 
     public static boolean canBreak(Player player) {
-        return player != null && player.isCreative() && !(player instanceof FakePlayer);
+        return player != null && player.isCreative() && player.isShiftKeyDown() && !(player instanceof FakePlayer);
     }
 
     public static boolean isBypassing() {

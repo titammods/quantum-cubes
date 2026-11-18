@@ -20,6 +20,12 @@ public class ModDataComponents {
                     .networkSynchronized(ByteBufCodecs.VAR_INT)
                     .build());
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> CUBE_INTERIOR =
+            DATA_COMPONENTS.register("cube_interior", () -> DataComponentType.<Integer>builder()
+                    .persistent(Codec.INT)
+                    .networkSynchronized(ByteBufCodecs.VAR_INT)
+                    .build());
+
     public static void register(IEventBus modEventBus) {
         DATA_COMPONENTS.register(modEventBus);
     }

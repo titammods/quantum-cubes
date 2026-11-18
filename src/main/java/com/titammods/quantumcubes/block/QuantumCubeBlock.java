@@ -46,8 +46,10 @@ public class QuantumCubeBlock extends Block implements EntityBlock {
         }
         if (!level.isClientSide()
                 && player instanceof ServerPlayer serverPlayer
-                && level.getBlockEntity(pos) instanceof QuantumCubeBlockEntity be) {
-            QuantumDimension.enter(serverPlayer, be);
+                && !QuantumDimension.onCooldown(serverPlayer, stack)
+                && level.getBlockEntity(pos) instanceof QuantumCubeBlockEntity be
+                && QuantumDimension.enter(serverPlayer, be)) {
+            QuantumDimension.startCooldown(serverPlayer, stack);
         }
         return InteractionResult.SUCCESS;
     }
@@ -68,12 +70,9 @@ public class QuantumCubeBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (!level.isClientSide() && !player.isCreative()) {
-            ItemStack stack = new ItemStack(this);
-            if (level.getBlockEntity(pos) instanceof QuantumCubeBlockEntity be && be.isGenerated()) {
-                stack.set(ModDataComponents.CUBE_INDEX.get(), be.getCubeIndex());
-            }
-            popResource(level, pos, stack);
+        if (!level.isClientSide() && player.isCreative()
+                && level.getBlockEntity(pos) instanceof QuantumCubeBlockEntity be) {
+            be.suppressDrop();
         }
         return super.playerWillDestroy(level, pos, state, player);
     }

@@ -11,5 +11,21 @@
   "tooltip.quantumcubes.desc": "Uma dimensão pessoal contida neste bloco",
   "tooltip.quantumcubes.bound": "Vinculado ao cubo %s",
   "tooltip.quantumcubes.enter": "Use um %s para entrar e sair",
-  "gui.quantumcubes.dim_missing": "A Quantum Dimension não está carregada."
+  "gui.quantumcubes.dim_missing": "A Quantum Dimension não está carregada.",
+  "message.quantumcubes.too_deep": "Uma força de outro mundo impede você de ir mais fundo.",
+  "message.quantumcubes.spawn_set": "Ponto de entrada deste cubo definido",
+  "message.quantumcubes.spawn_outside": "Fique dentro do cubo para definir o ponto de entrada",
+  "message.quantumcubes.spawn_unknown": "Saia e entre neste cubo pelo bloco uma vez para definir o ponto de entrada",
+  "message.quantumcubes.rescued": "Você foi resgatado do vazio",
+  "message.quantumcubes.teleport_blocked": "Uma força quântica mantém você dentro do cubo",
+  "message.quantumcubes.wall_shift": "Segure Shift para quebrar as paredes do cubo",
+  "command.quantumcubes.eject.done": "%s jogador(es) retirado(s) da dimensão quântica",
+  "command.quantumcubes.eject.none": "Nenhum jogador estava dentro de um cubo quântico",
+  "command.quantumcubes.list.header": "Cubos registrados: %s (%s gerados no total)",
+  "command.quantumcubes.list.entry": "#%s  Tier %s  %s  %s  dono: %s  em %s %s %s",
+  "command.quantumcubes.list.legacy": "(antigo)",
+  "command.quantumcubes.list.chunk": "(alinhado a chunks)",
+  "command.quantumcubes.tp.unknown": "O cubo #%s ainda não está registrado (alguém precisa entrar nele pelo bloco uma vez)",
+  "command.quantumcubes.spawn.reset": "Seu ponto de entrada neste cubo foi resetado",
+  "command.quantumcubes.spawn.none": "Você não tem ponto de entrada definido no cubo em que está"
 }
