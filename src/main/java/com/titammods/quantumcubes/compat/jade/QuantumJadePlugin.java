@@ -17,6 +17,6 @@ public class QuantumJadePlugin implements IWailaPlugin {
 
     @Override
     public void registerClient(IWailaClientRegistration registration) {
-        registration.registerBlockComponent(CubeJadeProvider.INSTANCE, QuantumCubeBlock.class);
+        registration.registerBlockComponent(CubeJadeClientProvider.INSTANCE, QuantumCubeBlock.class);
     }
 }
