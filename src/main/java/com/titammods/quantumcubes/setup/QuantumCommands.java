@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.UUID;
 
 @EventBusSubscriber(modid = QuantumCubes.MODID)
-public final class QuantumCommands {
+public class QuantumCommands {
 
     private QuantumCommands() {
     }
@@ -48,7 +48,11 @@ public final class QuantumCommands {
                                 .executes(QuantumCommands::teleport)))
                 .then(Commands.literal("spawn")
                         .then(Commands.literal("reset")
-                                .executes(QuantumCommands::resetSpawn))));
+                                .executes(QuantumCommands::resetSpawn))
+                        .then(Commands.literal("default")
+                                .executes(QuantumCommands::setDefaultSpawn)
+                                .then(Commands.literal("reset")
+                                        .executes(QuantumCommands::resetDefaultSpawn)))));
     }
 
     private static int eject(CommandContext<CommandSourceStack> ctx, Collection<ServerPlayer> players) {
@@ -85,7 +89,7 @@ public final class QuantumCommands {
                     ? Component.translatable("command.quantumcubes.list.legacy")
                     : Component.translatable("command.quantumcubes.list.chunk");
             Component owner = record.owner()
-                    .map(uuid -> ownerName(server, uuid))
+                    .map(uuid -> ownerName(server, uuid, record))
                     .orElse(Component.literal("-"));
             ctx.getSource().sendSuccess(() -> Component.translatable("command.quantumcubes.list.entry",
                     record.index(), record.tier().ordinal() + 1, s + "×" + s + "×" + s, layout, owner,
@@ -114,11 +118,52 @@ public final class QuantumCommands {
         return 1;
     }
 
-    private static Component ownerName(MinecraftServer server, UUID uuid) {
+    private static int setDefaultSpawn(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        if (!QuantumDimension.isQuantum(player)) {
+            ctx.getSource().sendFailure(Component.translatable("command.quantumcubes.spawn.default_outside"));
+            return 0;
+        }
+        return reportOwner(ctx, QuantumDimension.setDefaultSpawn(player, isOperator(ctx)),
+                "command.quantumcubes.spawn.default_set");
+    }
+
+    private static int resetDefaultSpawn(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        if (!QuantumDimension.isQuantum(player)) {
+            ctx.getSource().sendFailure(Component.translatable("command.quantumcubes.spawn.default_outside"));
+            return 0;
+        }
+        return reportOwner(ctx, QuantumDimension.resetDefaultSpawn(player, isOperator(ctx)),
+                "command.quantumcubes.spawn.default_reset");
+    }
+
+    private static int reportOwner(CommandContext<CommandSourceStack> ctx, QuantumDimension.OwnerResult result,
+                                   String successKey) {
+        String failure = switch (result) {
+            case DONE -> null;
+            case NONE -> "command.quantumcubes.spawn.default_none";
+            case NOT_OWNER -> "command.quantumcubes.spawn.not_owner";
+            case OUTSIDE -> "command.quantumcubes.spawn.default_outside";
+            case UNKNOWN -> "message.quantumcubes.spawn_unknown";
+        };
+        if (failure != null) {
+            ctx.getSource().sendFailure(Component.translatable(failure));
+            return 0;
+        }
+        ctx.getSource().sendSuccess(() -> Component.translatable(successKey), false);
+        return 1;
+    }
+
+    private static boolean isOperator(CommandContext<CommandSourceStack> ctx) {
+        return Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(ctx.getSource());
+    }
+
+    private static Component ownerName(MinecraftServer server, UUID uuid, CubeRecord record) {
         ServerPlayer online = server.getPlayerList().getPlayer(uuid);
         if (online != null) {
             return online.getName();
         }
-        return Component.literal(uuid.toString().substring(0, 8));
+        return Component.literal(record.ownerName().orElse(uuid.toString().substring(0, 8)));
     }
 }

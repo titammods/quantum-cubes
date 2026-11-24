@@ -157,6 +157,25 @@ public class QuantumSavedData extends SavedData {
         return record;
     }
 
+    public void setDefaultSpawn(CubeRecord record, CubeSpawn spawn) {
+        record.setDefaultSpawn(spawn);
+        setDirty();
+    }
+
+    public boolean resetDefaultSpawn(CubeRecord record) {
+        boolean removed = record.resetDefaultSpawn();
+        if (removed) {
+            setDirty();
+        }
+        return removed;
+    }
+
+    public void updateOwnerName(CubeRecord record, String name) {
+        if (record.setOwnerName(name)) {
+            setDirty();
+        }
+    }
+
     public Set<Integer> pending() {
         return pending;
     }

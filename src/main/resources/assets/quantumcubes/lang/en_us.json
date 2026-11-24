@@ -29,5 +29,15 @@
   "command.quantumcubes.spawn.reset": "Your entry point for this cube was reset",
   "command.quantumcubes.spawn.none": "You have no entry point set in the cube you are standing in",
   "message.quantumcubes.building": "Materializing the cube... %s%%",
-  "message.quantumcubes.cube_ready": "The cube is ready. Use the remote on it to enter."
+  "message.quantumcubes.cube_ready": "The cube is ready. Use the remote on it to enter.",
+  "command.quantumcubes.spawn.default_set": "Default entry point of this cube set here (players without their own entry point will arrive here)",
+  "command.quantumcubes.spawn.default_reset": "Default entry point of this cube was removed",
+  "command.quantumcubes.spawn.default_none": "This cube has no default entry point",
+  "command.quantumcubes.spawn.default_outside": "Stand inside a cube to use this command",
+  "command.quantumcubes.spawn.not_owner": "Only the owner of this cube can change its default entry point",
+  "jade.quantumcubes.index": "Cube %s",
+  "jade.quantumcubes.owner": "Owner: %s",
+  "jade.quantumcubes.unbound": "Not materialized yet",
+  "jade.quantumcubes.default_spawn": "Custom entry point set by the owner",
+  "config.jade.plugin_quantumcubes.cube": "Quantum Cube"
 }

@@ -38,6 +38,14 @@ public class QuantumDimension {
         UNKNOWN
     }
 
+    public enum OwnerResult {
+        DONE,
+        NONE,
+        NOT_OWNER,
+        OUTSIDE,
+        UNKNOWN
+    }
+
     private QuantumDimension() {
     }
 
@@ -78,7 +86,8 @@ public class QuantumDimension {
         CubeRecord record;
         if (!be.isGenerated()) {
             int index = data.allocate();
-            record = new CubeRecord(index, tier, CubeLayout.CHUNK, Optional.of(player.getUUID()), Map.of());
+            record = new CubeRecord(index, tier, CubeLayout.CHUNK, Optional.of(player.getUUID()),
+                    player.getName().getString(), Map.of(), null);
             data.registerCube(record);
             be.setCube(index);
             if (!CubeBuilder.build(dimension, record)) {
@@ -93,6 +102,7 @@ public class QuantumDimension {
             }
         }
 
+        refreshOwner(data, record, player);
         data.pushReturn(player.getUUID(), ReturnPoint.of(player));
         teleportInto(player, dimension, record);
         return true;
@@ -105,6 +115,7 @@ public class QuantumDimension {
                     .withStyle(ChatFormatting.DARK_RED, ChatFormatting.ITALIC));
             return false;
         }
+        refreshOwner(data, record, player);
         data.pushReturn(player.getUUID(), ReturnPoint.of(player));
         teleportInto(player, dimension, record);
         return true;
@@ -210,6 +221,36 @@ public class QuantumDimension {
                 .orElse(false);
     }
 
+    public static OwnerResult setDefaultSpawn(ServerPlayer player, boolean bypass) {
+        ServerLevel dimension = (ServerLevel) player.level();
+        QuantumSavedData data = QuantumSavedData.get(dimension);
+        Optional<CubeRecord> record = data.cube(indexAt(player.getX()));
+        if (record.isEmpty()) {
+            return OwnerResult.UNKNOWN;
+        }
+        if (!record.get().geometry().containsInterior(player.getX(), player.getY(), player.getZ())) {
+            return OwnerResult.OUTSIDE;
+        }
+        if (!bypass && !record.get().isOwner(player.getUUID())) {
+            return OwnerResult.NOT_OWNER;
+        }
+        data.setDefaultSpawn(record.get(), CubeSpawn.of(player));
+        return OwnerResult.DONE;
+    }
+
+    public static OwnerResult resetDefaultSpawn(ServerPlayer player, boolean bypass) {
+        ServerLevel dimension = (ServerLevel) player.level();
+        QuantumSavedData data = QuantumSavedData.get(dimension);
+        Optional<CubeRecord> record = cubeAt(dimension, player.getX(), player.getY(), player.getZ());
+        if (record.isEmpty()) {
+            return OwnerResult.UNKNOWN;
+        }
+        if (!bypass && !record.get().isOwner(player.getUUID())) {
+            return OwnerResult.NOT_OWNER;
+        }
+        return data.resetDefaultSpawn(record.get()) ? OwnerResult.DONE : OwnerResult.NONE;
+    }
+
     public static boolean isInsideCube(ServerLevel dimension, Vec3 target) {
         Optional<CubeRecord> record = QuantumSavedData.get(dimension).cube(indexAt(target.x));
         if (record.isPresent()) {
@@ -251,8 +292,14 @@ public class QuantumDimension {
         return false;
     }
 
+    private static void refreshOwner(QuantumSavedData data, CubeRecord record, ServerPlayer player) {
+        if (record.isOwner(player.getUUID())) {
+            data.updateOwnerName(record, player.getName().getString());
+        }
+    }
+
     private static void teleportInto(ServerPlayer player, ServerLevel dimension, CubeRecord record) {
-        Optional<CubeSpawn> spawn = record.spawnFor(player.getUUID());
+        Optional<CubeSpawn> spawn = record.resolveSpawn(player.getUUID());
         if (spawn.isPresent()) {
             teleport(player, dimension, spawn.get().pos(), spawn.get().yaw(), spawn.get().pitch());
         } else {

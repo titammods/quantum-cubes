@@ -52,6 +52,11 @@ public class CubeBuilder {
         return JOBS.containsKey(index);
     }
 
+    public static int progress(int index) {
+        CubeBuildJob job = JOBS.get(index);
+        return job == null ? 100 : job.progress();
+    }
+
     public static void await(int index, ServerPlayer player, BlockPos origin) {
         CubeBuildJob job = JOBS.get(index);
         if (job == null) {
